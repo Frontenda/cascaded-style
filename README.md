@@ -32,10 +32,6 @@ Visit `http://localhost:8080/test/suite.html`
 * Send a pull request.
 * Write tests. New untested code will not be merged.
 
-### Rando
-
-[SKELETONSKELETONSKELETONSKELETONSKELETON][skeleton]
-
 MIT License
 
 [jasmine]: http://pivotal.github.com/jasmine/
