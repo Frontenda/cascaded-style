@@ -22,20 +22,20 @@
   };
 
   window.getMatchedCSSRulesPolyfill = function(element) {
-    var media, result, rule, rules, sheet, sheet_media, style_sheets;
+    var fn, result, rule, sheet, sheet_media, style_sheets, _i, _len, _ref;
     result = [];
-    style_sheets = [].slice.call(document.styleSheets);
-    while ((sheet = style_sheets.shift())) {
+    style_sheets = Array.prototype.slice.call(document.styleSheets);
+    while (sheet = style_sheets.shift()) {
       sheet_media = sheet.media.mediaText;
-      media = [].slice.call(sheet_media);
-      if (sheet.disabled) {
+      if (sheet.disabled || !sheet.cssRules) {
         continue;
       }
       if (sheet_media.length && !window.matchMedia(sheet_media).matches) {
         continue;
       }
-      rules = [].slice.call(sheet.cssRules);
-      while (rule = rules.shift()) {
+      _ref = sheet.cssRules;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        rule = _ref[_i];
         if (rule.stylesheet) {
           style_sheets.push(rule.stylesheet);
           continue;
@@ -43,7 +43,8 @@
           style_sheets.push(rule);
           continue;
         }
-        if (element.mozMatchesSelector(rule.selectorText)) {
+        fn = element.matchesSelector || element.mozMatchesSelector || element.webkitMatchesSelector;
+        if (fn.call(element, rule.selectorText)) {
           result.push(rule);
         }
       }
@@ -80,7 +81,7 @@
     important = {};
     $el = $(el);
     matchedRules = options["function"].call(window, $el[0], null);
-    matchedRules = Array.prototype.slice.call(matchedRules, 0);
+    matchedRules = Array.prototype.slice.call(matchedRules);
     matchedRules.push($el[0].style);
     console.log(matchedRules);
     for (_i = 0, _len = matchedRules.length; _i < _len; _i++) {

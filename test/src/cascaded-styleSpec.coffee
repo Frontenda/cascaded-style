@@ -29,3 +29,20 @@ describe 'getMatchedStyle', ->
       style = $('.has-style-attribute').getMatchedStyle()
       expect(style['background-color']).toEqual('green')
 
+  describe 'using polyfill', ->
+    it 'handles multiple style rules', ->
+      runs ->
+        style = $('.has-multiple-style-rules').getMatchedStyle(polyfill:true)
+        expect(style['background-color']).toEqual('blue')
+        expect(style['line-height']).toEqual('1.6')
+
+    it 'handles important rules', ->
+      runs ->
+        style = $('.has-multiple-style-rules').getMatchedStyle(polyfill:true)
+        expect(style['font-size']).toEqual('3em')
+
+    it 'handles style attributes', ->
+      runs ->
+        style = $('.has-style-attribute').getMatchedStyle(polyfill:true)
+        expect(style['background-color']).toEqual('green')
+

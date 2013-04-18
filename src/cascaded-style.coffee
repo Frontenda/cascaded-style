@@ -22,15 +22,14 @@ _inspectCSS = (el, options={}) ->
 # Returns nothing.
 window.getMatchedCSSRulesPolyfill = (element) ->
   result = []
-  style_sheets = [].slice.call(document.styleSheets)
+  style_sheets = Array::slice.call(document.styleSheets)
 
-  while ( sheet = style_sheets.shift() )
+  while sheet = style_sheets.shift()
     sheet_media = sheet.media.mediaText
-    media = [].slice.call(sheet_media)
-    continue if ( sheet.disabled )
-    continue if ( sheet_media.length && ! window.matchMedia(sheet_media).matches )
-    rules = [].slice.call(sheet.cssRules)
-    while rule = rules.shift()
+    continue if sheet.disabled or not sheet.cssRules
+    continue if sheet_media.length and not window.matchMedia(sheet_media).matches
+
+    for rule in sheet.cssRules
       if rule.stylesheet
         # add imported stylesheet to the stylesheets array
         style_sheets.push(rule.stylesheet)
@@ -43,7 +42,8 @@ window.getMatchedCSSRulesPolyfill = (element) ->
         # and skip it
         continue
 
-      if element.mozMatchesSelector(rule.selectorText)
+      fn = element.matchesSelector or element.mozMatchesSelector or element.webkitMatchesSelector
+      if fn.call(element, rule.selectorText)
         result.push(rule)
 
   _sortBySpecificity(result)
@@ -82,7 +82,7 @@ _inspect = (el, options={}) ->
   important = {}
   $el = $(el)
   matchedRules = options.function.call(window, $el[0], null)
-  matchedRules = Array::slice.call(matchedRules, 0) # convert into a real array
+  matchedRules = Array::slice.call(matchedRules) # convert into a real array
 
   # append style from the style attribute. End of the array -> most important.
   matchedRules.push($el[0].style)
