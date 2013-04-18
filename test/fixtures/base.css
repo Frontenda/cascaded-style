@@ -1,6 +1,7 @@
 
 .has-multiple-style-rules{
   background-color: white;
+  background-position: initial initial;
   color: #333;
   font-size: 3em !important;
 }

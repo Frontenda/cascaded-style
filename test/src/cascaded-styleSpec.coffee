@@ -22,12 +22,23 @@ describe 'getMatchedStyle', ->
   it 'handles important rules', ->
     runs ->
       style = $('.has-multiple-style-rules').getMatchedStyle()
+      console.log style
       expect(style['font-size']).toEqual('3em')
 
   it 'handles style attributes', ->
     runs ->
       style = $('.has-style-attribute').getMatchedStyle()
       expect(style['background-color']).toEqual('green')
+
+  it 'doesnt replace initial with default options', ->
+    runs ->
+      style = $('.has-multiple-style-rules').getMatchedStyle()
+      expect(style['background-position']).toEqual('initial initial')
+
+  it 'replaces initial when intelligentReplace specified', ->
+    runs ->
+      style = $('.has-multiple-style-rules').getMatchedStyle(intelligentReplace: true)
+      expect(style['background-position']).toEqual('0% 0%')
 
   describe 'using polyfill', ->
     it 'handles multiple style rules', ->
