@@ -97,9 +97,9 @@
         sprop = property.split(':');
         name = sprop[0].trim();
         value = sprop.slice(1).join(':').trim();
-        isImportant = value.indexOf('!important') > -1;
+        isImportant = /\!\s*important/g.test(value);
         if (isImportant) {
-          value = value.replace('!important', '').trim();
+          value = value.replace(/\!\s*important/g, '').trim();
           important[name] = true;
         }
         if ((isImportant && important[name]) || !important[name]) {
