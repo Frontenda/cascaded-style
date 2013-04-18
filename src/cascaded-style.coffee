@@ -1,5 +1,5 @@
 
-$.fn.getMatchedStyle = (options) ->
+$.fn.cascadedStyle = (options) ->
   _inspectCSS($(this), options)
 
 # Private: Inspects the CSS of a given DOM element.

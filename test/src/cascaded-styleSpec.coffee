@@ -1,4 +1,4 @@
-describe 'getMatchedStyle', ->
+describe 'cascadedStyle', ->
   beforeEach ->
     runs ->
       loadStyleFixtures('base.css')
@@ -11,62 +11,62 @@ describe 'getMatchedStyle', ->
 
   it 'exists', ->
     expect($('#test')).toExist()
-    expect($('#test').getMatchedStyle).toBeDefined()
+    expect($('#test').cascadedStyle).toBeDefined()
 
   it 'handles multiple style rules', ->
     runs ->
-      style = $('.has-multiple-style-rules').getMatchedStyle()
+      style = $('.has-multiple-style-rules').cascadedStyle()
       expect(style['background-color']).toEqual('blue')
       expect(style['line-height']).toEqual('1.6')
 
   it 'handles important rules', ->
     runs ->
-      style = $('.has-multiple-style-rules').getMatchedStyle()
+      style = $('.has-multiple-style-rules').cascadedStyle()
       console.log style
       expect(style['font-size']).toEqual('3em')
 
   it 'handles style attributes', ->
     runs ->
-      style = $('.has-style-attribute').getMatchedStyle()
+      style = $('.has-style-attribute').cascadedStyle()
       expect(style['background-color']).toEqual('green')
 
   it 'handles background position in style rule', ->
     runs ->
       # the browser is annoying in this case. it makes top right -> 100% 0%
-      style = $('.has-multiple-style-rules').getMatchedStyle()
+      style = $('.has-multiple-style-rules').cascadedStyle()
       expect(style['background-position']).toEqual('100% 0%')
 
   it 'handles background position on style attribute', ->
     runs ->
-      style = $('.has-style-attribute').getMatchedStyle()
+      style = $('.has-style-attribute').cascadedStyle()
       expect(style['background-position']).toEqual('top center')
 
   describe 'using polyfill', ->
     it 'handles multiple style rules', ->
       runs ->
-        style = $('.has-multiple-style-rules').getMatchedStyle(polyfill:true)
+        style = $('.has-multiple-style-rules').cascadedStyle(polyfill:true)
         expect(style['background-color']).toEqual('blue')
         expect(style['line-height']).toEqual('1.6')
 
     it 'handles important rules', ->
       runs ->
-        style = $('.has-multiple-style-rules').getMatchedStyle(polyfill:true)
+        style = $('.has-multiple-style-rules').cascadedStyle(polyfill:true)
         expect(style['font-size']).toEqual('3em')
 
     it 'handles style attributes', ->
       runs ->
-        style = $('.has-style-attribute').getMatchedStyle(polyfill:true)
+        style = $('.has-style-attribute').cascadedStyle(polyfill:true)
         expect(style['background-color']).toEqual('green')
 
     it 'handles background position in style rule', ->
       runs ->
         # the browser is annoying in this case. it makes top right -> 100% 0%
-        style = $('.has-multiple-style-rules').getMatchedStyle()
+        style = $('.has-multiple-style-rules').cascadedStyle()
         expect(style['background-position']).toEqual('100% 0%')
 
     it 'handles background position on style attribute', ->
       runs ->
-        style = $('.has-style-attribute').getMatchedStyle()
+        style = $('.has-style-attribute').cascadedStyle()
         expect(style['background-position']).toEqual('top center')
 
 

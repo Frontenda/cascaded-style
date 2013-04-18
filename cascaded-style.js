@@ -2,7 +2,7 @@
 (function() {
   var _inspect, _inspectCSS, _inspectWithListOfRules, _sortBySpecificity;
 
-  $.fn.getMatchedStyle = function(options) {
+  $.fn.cascadedStyle = function(options) {
     return _inspectCSS($(this), options);
   };
 
