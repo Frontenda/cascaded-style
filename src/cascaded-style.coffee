@@ -14,9 +14,7 @@ _inspectCSS = (el, options={}) ->
     func = window.getMatchedCSSRulesPolyfill
     console.log 'using polyfill'
 
-  css = _inspect(el, function: func)
-  css = _intelligentReplace(el, css, options) if options.intelligentReplace
-  css
+  _inspect(el, function: func)
 
 # Private: Ensures that getMatchedCSSRules is defined.
 # Code from: https://gist.github.com/3033012 revision 732e1c
@@ -112,15 +110,6 @@ _inspect = (el, options={}) ->
       results[property] = value if value
 
   results
-
-_intelligentReplace = (el, css, options={}) ->
-  shouldReplaceWithComputedStyle = (property, value) ->
-    value.indexOf('initial') == 0
-
-  for property, value of css
-    css[property] = el.css(property) if shouldReplaceWithComputedStyle(property, value)
-
-  css
 
 # Private: Inspects the CSS of a given DOM element using the DOM standard.
 #
