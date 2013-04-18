@@ -8,11 +8,13 @@
   },
   "ignore": [
     ".gitignore",
+    ".bowerrc",
     "LICENSE",
     "Makefile",
     "**/*.md",
     "**/*.json",
     "src/",
     "test/"
+    "lib/"
   ]
 }
