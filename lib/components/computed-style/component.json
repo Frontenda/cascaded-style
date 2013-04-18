@@ -1,0 +1,9 @@
+{
+  "name": "computed-style",
+  "version": "0.0.0",
+  "commit": "bb509792cace0c7a6f2cd4720a422f53f604ba39",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jamierumbelow/jquery.computed-style.git"
+  }
+}
