@@ -1,5 +1,5 @@
 {
-  "name": "Cascaded Style",
+  "name": "cascaded-style",
   "version": "0.0.0",
   "main": ["./cascaded-style.js"],
   "dependencies": {
