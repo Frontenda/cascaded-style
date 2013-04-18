@@ -1,0 +1,17 @@
+{
+  "name": "Cascaded Style",
+  "version": "0.0.0",
+  "main": ["./cascaded-style.js"],
+  "dependencies": {
+    "specificity": "easelinc/specificity"
+  },
+  "ignore": [
+    ".gitignore",
+    "LICENSE",
+    "Makefile",
+    "**/*.md",
+    "**/*.json",
+    "src/",
+    "test/"
+  ]
+}
