@@ -4,6 +4,7 @@
   background-position: right top;
   color: #333;
   font-size: 3em !important;
+  font-family: inherit;
 }
 #test .has-multiple-style-rules{
   background-color: blue;

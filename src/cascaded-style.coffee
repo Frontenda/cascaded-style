@@ -10,12 +10,12 @@ $.fn.cascadedStyle = (options) ->
 # their coresponding CSS values.
 _inspectCSS = (el, options={}) ->
   func = window.getMatchedCSSRules
-  unless func and not options.polyfill
-    func = window.getMatchedCSSRulesPolyfill
+  func = window.getMatchedCSSRulesPolyfill unless func and not options.polyfill
+  options.function = func
 
-  _inspect(el, function: func)
+  _inspect(el, options)
 
-# Private: Ensures that getMatchedCSSRules is defined.
+# Private: Polyfill for getMatchedCSSRules.
 # Code from: https://gist.github.com/3033012 revision 732e1c
 #
 # Returns nothing.
@@ -108,7 +108,30 @@ _inspect = (el, options={}) ->
     for property, value of properties
       results[property] = value if value
 
+  results = _filterProperties(el, results, options.properties) if options.properties
+  results = _replaceInherit(el, results) if options.replaceInherit
   results
+
+# Private:
+_filterProperties = (el, css, properties) ->
+  return css unless properties and properties.length
+
+  style = el.computedStyle()
+
+  results = {}
+  for prop in properties
+    results[prop] = if prop of css then css[prop] else style[prop]
+
+  results
+
+# Private:
+_replaceInherit = (el, css) ->
+  style = el.computedStyle()
+
+  for prop, value of css
+    css[prop] = style[prop] if value.indexOf('inherit') == 0
+
+  css
 
 # Private: Inspects the CSS of a given DOM element using the DOM standard.
 #
