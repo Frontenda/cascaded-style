@@ -1,4 +1,15 @@
-
+# Return the cascaded style for an element. Uses getMatchedCSSRules in chrome
+# and a polyfill in firefox.
+#
+# options:
+#   polyfill - bool; will use the polyfill getMatchedCSSRules.
+#              Useful for when crossdomain sheets.
+#              default: false
+#   properties - List of properties to return; If a property's cascaded style
+#                is not available from a stylesheet, will return computed style.
+#                default: null
+#   replaceInherit - bool; will replace css values 'inherit' with their computed counterpart
+#                    default: false
 $.fn.cascadedStyle = (options) ->
   _inspectCSS($(this), options)
 
@@ -15,35 +26,38 @@ _inspectCSS = (el, options={}) ->
 
   _inspect(el, options)
 
-# Private: Polyfill for getMatchedCSSRules.
+# Private: Polyfill for getMatchedCSSRules. Also useful for when some of the
+# stylesheets are crossdomain. In the case of crossdomain stylesheets, the
+# real getMatchedCSSRules will just return null. Maddening.
+#
 # Code from: https://gist.github.com/3033012 revision 732e1c
 #
 # Returns nothing.
 window.getMatchedCSSRulesPolyfill = (element) ->
   result = []
-  style_sheets = Array::slice.call(document.styleSheets)
+  styleSheets = Array::slice.call(document.styleSheets)
 
-  while sheet = style_sheets.shift()
-    sheet_media = sheet.media.mediaText
+  while sheet = styleSheets.shift()
+    sheetMedia = sheet.media.mediaText
     continue if sheet.disabled or not sheet.cssRules
-    continue if sheet_media.length and not window.matchMedia(sheet_media).matches
+    continue if sheetMedia.length and not window.matchMedia(sheetMedia).matches
 
     for rule in sheet.cssRules
       if rule.stylesheet
-        # add imported stylesheet to the stylesheets array
-        style_sheets.push(rule.stylesheet)
+        # Is an imported sheet (@import). add imported stylesheet to the
+        # stylesheets array
+        styleSheets.push(rule.stylesheet)
         # and skip this rule
         continue
       else if rule.media
-        # add this rule to the stylesheets array since it quacks like
-        # a stylesheet (has media & cssRules attibutes)
-        style_sheets.push(rule)
+        # Is a media query. add this rule to the stylesheets array since it quacks
+        # like a stylesheet (has media & cssRules attibutes)
+        styleSheets.push(rule)
         # and skip it
         continue
 
       fn = element.matchesSelector or element.mozMatchesSelector or element.webkitMatchesSelector
-      if fn.call(element, rule.selectorText)
-        result.push(rule)
+      result.push(rule) if fn.call(element, rule.selectorText)
 
   _sortBySpecificity(result)
 

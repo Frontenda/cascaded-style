@@ -20,25 +20,25 @@
   };
 
   window.getMatchedCSSRulesPolyfill = function(element) {
-    var fn, result, rule, sheet, sheet_media, style_sheets, _i, _len, _ref;
+    var fn, result, rule, sheet, sheetMedia, styleSheets, _i, _len, _ref;
     result = [];
-    style_sheets = Array.prototype.slice.call(document.styleSheets);
-    while (sheet = style_sheets.shift()) {
-      sheet_media = sheet.media.mediaText;
+    styleSheets = Array.prototype.slice.call(document.styleSheets);
+    while (sheet = styleSheets.shift()) {
+      sheetMedia = sheet.media.mediaText;
       if (sheet.disabled || !sheet.cssRules) {
         continue;
       }
-      if (sheet_media.length && !window.matchMedia(sheet_media).matches) {
+      if (sheetMedia.length && !window.matchMedia(sheetMedia).matches) {
         continue;
       }
       _ref = sheet.cssRules;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         rule = _ref[_i];
         if (rule.stylesheet) {
-          style_sheets.push(rule.stylesheet);
+          styleSheets.push(rule.stylesheet);
           continue;
         } else if (rule.media) {
-          style_sheets.push(rule);
+          styleSheets.push(rule);
           continue;
         }
         fn = element.matchesSelector || element.mozMatchesSelector || element.webkitMatchesSelector;
