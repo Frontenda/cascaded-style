@@ -126,7 +126,15 @@ _inspect = (el, options={}) ->
   results = _replaceInherit(el, results) if options.replaceInherit
   results
 
-# Private:
+# Private: Returns a dict of css properties with only the properties
+# specified. If a property is not already in css, it's computed style will be
+# pulled from el. Think of it like a specialized _.pick()
+#
+# el - a jquery element
+# css - the css dict with all cascaded styles
+# properties - a list of properties
+#
+# Returns a dict
 _filterProperties = (el, css, properties) ->
   return css unless properties and properties.length
 
@@ -138,7 +146,12 @@ _filterProperties = (el, css, properties) ->
 
   results
 
-# Private:
+# Private: Replaced any 'inherit's with their computed style.
+#
+# el - a jquery element
+# css - the css dict with all cascaded styles
+#
+# Returns a dict of css
 _replaceInherit = (el, css) ->
   style = el.computedStyle()
 
