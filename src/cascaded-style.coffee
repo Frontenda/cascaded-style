@@ -1,6 +1,6 @@
 
-$.fn.getMatchedStyle = ->
-  _inspectCSS($(this))
+$.fn.getMatchedStyle = (options) ->
+  _inspectCSS($(this), options)
 
 # Private: Inspects the CSS of a given DOM element.
 #
@@ -8,46 +8,45 @@ $.fn.getMatchedStyle = ->
 #
 # Returns an object whose properties are CSS property names and values are
 # their coresponding CSS values.
-_inspectCSS = (el) ->
-  _ensureGetMatchedCSSRules()
-  try
-    _inspectWithGetMatchedCSSRules(el)
-  catch error
-    _inspectWithListOfRules(el)
+_inspectCSS = (el, options={}) ->
+  func = window.getMatchedCSSRules
+  unless func and not options.polyfill
+    func = window.getMatchedCSSRulesPolyfill
+    console.log 'using polyfill'
+
+  _inspect(el, function: func)
 
 # Private: Ensures that getMatchedCSSRules is defined.
 # Code from: https://gist.github.com/3033012 revision 732e1c
 #
 # Returns nothing.
-_ensureGetMatchedCSSRules = ->
-  unless window.getMatchedCSSRules
-    window.getMatchedCSSRules = (element) ->
-      result = []
-      style_sheets = [].slice.call(document.styleSheets)
+window.getMatchedCSSRulesPolyfill = (element) ->
+  result = []
+  style_sheets = [].slice.call(document.styleSheets)
 
-      while ( sheet = style_sheets.shift() )
-        sheet_media = sheet.media.mediaText
-        media = [].slice.call(sheet_media)
-        continue if ( sheet.disabled )
-        continue if ( sheet_media.length && ! window.matchMedia(sheet_media).matches )
-        rules = [].slice.call(sheet.cssRules)
-        while rule = rules.shift()
-          if rule.stylesheet
-            # add imported stylesheet to the stylesheets array
-            style_sheets.push(rule.stylesheet)
-            # and skip this rule
-            continue
-          else if rule.media
-            # add this rule to the stylesheets array since it quacks like
-            # a stylesheet (has media & cssRules attibutes)
-            style_sheets.push(rule)
-            # and skip it
-            continue
+  while ( sheet = style_sheets.shift() )
+    sheet_media = sheet.media.mediaText
+    media = [].slice.call(sheet_media)
+    continue if ( sheet.disabled )
+    continue if ( sheet_media.length && ! window.matchMedia(sheet_media).matches )
+    rules = [].slice.call(sheet.cssRules)
+    while rule = rules.shift()
+      if rule.stylesheet
+        # add imported stylesheet to the stylesheets array
+        style_sheets.push(rule.stylesheet)
+        # and skip this rule
+        continue
+      else if rule.media
+        # add this rule to the stylesheets array since it quacks like
+        # a stylesheet (has media & cssRules attibutes)
+        style_sheets.push(rule)
+        # and skip it
+        continue
 
-          if element.mozMatchesSelector(rule.selectorText)
-            result.push(rule)
+      if element.mozMatchesSelector(rule.selectorText)
+        result.push(rule)
 
-      _sortBySpecificity(result)
+  _sortBySpecificity(result)
 
 # Private: Sort a list of css rules by their specificity. Most specific is
 # last.
@@ -76,10 +75,20 @@ _sortBySpecificity = (rules) ->
 #
 # Returns an object whose properties are CSS property names and values are
 # their corresponding CSS values.
-_inspectWithGetMatchedCSSRules = (el) ->
+_inspect = (el, options={}) ->
+  options.function = window.getMatchedCSSRules unless options.function
+
   results = {}
+  important = {}
   $el = $(el)
-  matchedRules = window.getMatchedCSSRules(el, null)
+  matchedRules = options.function.call(window, $el[0], null)
+  matchedRules = Array::slice.call(matchedRules, 0) # convert into a real array
+
+  # append style from the style attribute. End of the array -> most important.
+  matchedRules.push($el[0].style)
+
+  console.log(matchedRules)
+
   for matchedRule in matchedRules
     properties = {}
     cssText = matchedRule.cssText
@@ -87,14 +96,17 @@ _inspectWithGetMatchedCSSRules = (el) ->
     for property in cssText.split(';')
       # we cant simply split on the colon for the sake of urls.
       sprop = property.split(':')
-      name = sprop[0]
-      properties[name.trim()] = sprop.slice(1).join(':')
+      name = sprop[0].trim()
+      value = sprop.slice(1).join(':').trim()
+
+      isImportant = value.indexOf('!important') > -1
+      if isImportant
+        value = value.replace('!important', '').trim()
+        important[name] = true # this property now only accepts important values.
+
+      properties[name] = value if (isImportant and important[name]) or not important[name]
 
     for property, value of properties
-      #continue unless @_includeCssProperty(property)
-      #if value == 'inherit'
-      #  results[property] = $el.computedStyle(property)
-
       results[property] = value if value
 
   results
@@ -106,7 +118,7 @@ _inspectWithGetMatchedCSSRules = (el) ->
 #
 # Returns an object whose properties are CSS property names and values are
 # their coresponding CSS values.
-_inspectWithListOfRules: (el, isRoot) ->
+_inspectWithListOfRules = (el, isRoot) ->
   el = $(el)
 
   style = el.computedStyle()
