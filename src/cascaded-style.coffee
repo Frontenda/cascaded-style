@@ -12,7 +12,6 @@ _inspectCSS = (el, options={}) ->
   func = window.getMatchedCSSRules
   unless func and not options.polyfill
     func = window.getMatchedCSSRulesPolyfill
-    console.log 'using polyfill'
 
   _inspect(el, function: func)
 
@@ -88,8 +87,6 @@ _inspect = (el, options={}) ->
   # Use the values in the style attribute (not el.style) as they aren't munged
   # by the browser.
   matchedRules.push(cssText: ($el.attr('style') or ''))
-
-  console.log(matchedRules)
 
   for matchedRule in matchedRules
     properties = {}

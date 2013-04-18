@@ -14,7 +14,6 @@
     func = window.getMatchedCSSRules;
     if (!(func && !options.polyfill)) {
       func = window.getMatchedCSSRulesPolyfill;
-      console.log('using polyfill');
     }
     return _inspect(el, {
       "function": func
@@ -85,7 +84,6 @@
     matchedRules.push({
       cssText: $el.attr('style') || ''
     });
-    console.log(matchedRules);
     for (_i = 0, _len = matchedRules.length; _i < _len; _i++) {
       matchedRule = matchedRules[_i];
       properties = {};
