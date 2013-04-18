@@ -28,7 +28,7 @@
       if (sheet.disabled || !sheet.cssRules) {
         continue;
       }
-      if (sheetMedia.length && !window.matchMedia(sheetMedia).matches) {
+      if (sheetMedia.length && (!window.matchMedia || !window.matchMedia(sheetMedia).matches)) {
         continue;
       }
       _ref = sheet.cssRules;

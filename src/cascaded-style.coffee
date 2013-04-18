@@ -40,7 +40,9 @@ window.getMatchedCSSRulesPolyfill = (element) ->
   while sheet = styleSheets.shift()
     sheetMedia = sheet.media.mediaText
     continue if sheet.disabled or not sheet.cssRules
-    continue if sheetMedia.length and not window.matchMedia(sheetMedia).matches
+
+    # most browsers have window.matchMedia, but some (jasmine headless webkit) dont
+    continue if sheetMedia.length and (not window.matchMedia or not window.matchMedia(sheetMedia).matches)
 
     for rule in sheet.cssRules
       if rule.stylesheet
