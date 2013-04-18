@@ -160,22 +160,3 @@ _replaceInherit = (el, css) ->
 
   css
 
-# Private: Inspects the CSS of a given DOM element using the DOM standard.
-#
-# el - A DOM element.
-# isRoot - inspecting the root element?
-#
-# Returns an object whose properties are CSS property names and values are
-# their coresponding CSS values.
-_inspectWithListOfRules = (el, isRoot) ->
-  el = $(el)
-
-  style = el.computedStyle()
-  results = {}
-  $.each style, (key) =>
-    property = style[key]
-    return unless @_includeCssProperty(property)
-    results[property] = style.getPropertyValue(property)
-
-  results
-
