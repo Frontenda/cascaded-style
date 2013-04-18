@@ -84,8 +84,10 @@ _inspect = (el, options={}) ->
   matchedRules = options.function.call(window, $el[0], null)
   matchedRules = Array::slice.call(matchedRules) # convert into a real array
 
-  # append style from the style attribute. End of the array -> most important.
-  matchedRules.push($el[0].style)
+  # Append style from the style attribute. End of the array -> most important.
+  # Use the values in the style attribute (not el.style) as they aren't munged
+  # by the browser.
+  matchedRules.push(cssText: ($el.attr('style') or ''))
 
   console.log(matchedRules)
 

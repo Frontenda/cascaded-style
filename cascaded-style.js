@@ -82,7 +82,9 @@
     $el = $(el);
     matchedRules = options["function"].call(window, $el[0], null);
     matchedRules = Array.prototype.slice.call(matchedRules);
-    matchedRules.push($el[0].style);
+    matchedRules.push({
+      cssText: $el.attr('style') || ''
+    });
     console.log(matchedRules);
     for (_i = 0, _len = matchedRules.length; _i < _len; _i++) {
       matchedRule = matchedRules[_i];
