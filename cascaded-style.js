@@ -42,8 +42,12 @@
           continue;
         }
         fn = element.matchesSelector || element.mozMatchesSelector || element.webkitMatchesSelector;
-        if (fn.call(element, rule.selectorText)) {
-          result.push(rule);
+        try {
+          if (fn.call(element, rule.selectorText)) {
+            result.push(rule);
+          }
+        } catch (e) {
+
         }
       }
     }
@@ -140,7 +144,7 @@
     style = el.computedStyle();
     for (prop in css) {
       value = css[prop];
-      if (value.indexOf('inherit') === 0) {
+      if ((value != null) && value.indexOf('inherit') === 0) {
         css[prop] = style[prop];
       }
     }

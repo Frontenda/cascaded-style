@@ -57,7 +57,11 @@ window.getMatchedCSSRulesPolyfill = (element) ->
         continue
 
       fn = element.matchesSelector or element.mozMatchesSelector or element.webkitMatchesSelector
-      result.push(rule) if fn.call(element, rule.selectorText)
+      try
+        # in try/catch as there might be an 'invalid' selector.
+        result.push(rule) if fn.call(element, rule.selectorText)
+      catch e
+        ;
 
   _sortBySpecificity(result)
 
@@ -156,7 +160,7 @@ _replaceInherit = (el, css) ->
   style = el.computedStyle()
 
   for prop, value of css
-    css[prop] = style[prop] if value.indexOf('inherit') == 0
+    css[prop] = style[prop] if value? and value.indexOf('inherit') == 0
 
   css
 
