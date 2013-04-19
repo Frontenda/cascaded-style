@@ -51,6 +51,11 @@ describe 'cascadedStyle', ->
       style = $('.has-style-attribute').cascadedStyle(properties: ['line-height'])
       expect(style).toEqual('line-height': 'normal')
 
+    describe 'dealing with composite properties', ->
+      it 'composites background-position', ->
+        style = $('.has-multiple-style-rules').cascadedStyle(properties: ['background-position'])
+        expect(style).toEqual('background-position': '100% 0%')
+
   describe 'using polyfill', ->
     it 'handles multiple style rules', ->
       style = $('.has-multiple-style-rules').cascadedStyle(polyfill:true)

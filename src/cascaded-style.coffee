@@ -142,9 +142,16 @@ _filterProperties = (el, css, properties) ->
 
   style = el.computedStyle()
 
+  # Will try to composite the property from the atomic properties if possible.
+  # Otherwise, just use computed style.
+  computeStyle = (property) ->
+    value = _compositeProperty(property, css)
+    value = style[property] unless value?
+    value
+
   results = {}
   for prop in properties
-    results[prop] = if prop of css then css[prop] else style[prop]
+    results[prop] = if prop of css then css[prop] else computeStyle(prop)
 
   results
 
@@ -161,4 +168,23 @@ _replaceInherit = (el, css) ->
     css[prop] = style[prop] if value? and value.indexOf('inherit') == 0
 
   css
+
+# Private: compose a value for property based on the atomic css properties
+# passed in.
+#
+# property - string property like 'background-position'
+# css - dict of css properties {'background-position-x': '100%', ...}
+#
+# Returns a value for the property if it can compose one.
+_compositeProperty = (property, css) ->
+  if COMPOSITES[property]
+    return COMPOSITES[property](css)
+  null
+
+COMPOSITES =
+  'background-position': (css) ->
+    if css['background-position-x'] and css['background-position-y']
+      return "#{css['background-position-x']} #{css['background-position-y']}"
+    null
+
 
