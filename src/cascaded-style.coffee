@@ -124,8 +124,8 @@ _inspect = (el, options={}) ->
         results[property] = style.getPropertyValue(property)
         important[property] = true
 
-  results = _filterProperties(el, results, options.properties) if options.properties
   results = _replaceInherit(el, results) if options.replaceInherit
+  results = _filterProperties(el, results, options.properties) if options.properties
   results
 
 # Private: Returns a dict of css properties with only the properties

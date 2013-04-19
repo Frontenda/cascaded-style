@@ -100,11 +100,11 @@
         }
       }
     }
-    if (options.properties) {
-      results = _filterProperties(el, results, options.properties);
-    }
     if (options.replaceInherit) {
       results = _replaceInherit(el, results);
+    }
+    if (options.properties) {
+      results = _filterProperties(el, results, options.properties);
     }
     return results;
   };
