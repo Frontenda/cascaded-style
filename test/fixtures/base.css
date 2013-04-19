@@ -5,6 +5,10 @@
   color: #333;
   font-size: 3em !important;
   font-family: inherit;
+  border-left: 1px dashed #333;
+  border-top: 2px solid #444;
+  border-bottom: 3px solid #555;
+  border-right: 4px solid #666;
 }
 #test .has-multiple-style-rules{
   background-color: blue;

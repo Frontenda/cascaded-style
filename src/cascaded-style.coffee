@@ -103,30 +103,26 @@ _inspect = (el, options={}) ->
   matchedRules = options.function.call(window, $el[0], null)
   matchedRules = Array::slice.call(matchedRules) # convert into a real array
 
-  # Append style from the style attribute. End of the array -> most important.
-  # Use the values in the style attribute (not el.style) as they aren't munged
-  # by the browser.
-  matchedRules.push(cssText: ($el.attr('style') or ''))
+  # Append style from the element. End of the array -> most important.
+  matchedRules.push($el[0])
+  matchedRules.reverse()
 
   for matchedRule in matchedRules
-    properties = {}
-    cssText = matchedRule.cssText
-    cssText = cssText.match(/{([^}]*)}/)[1] if cssText.indexOf('{') > -1
-    for property in cssText.split(';')
-      # we cant simply split on the colon for the sake of urls.
-      sprop = property.split(':')
-      name = sprop[0].trim()
-      value = sprop.slice(1).join(':').trim()
+    style = matchedRule.style
 
-      isImportant = /\!\s*important/g.test(value)
-      if isImportant
-        value = value.replace(/\!\s*important/g, '').trim()
-        important[name] = true # this property now only accepts important values.
+    # Will get all the atomic properties (i.e. background-position-x, not
+    # background). Atomic properties are important for accuracy. Otherwise we
+    # might get in the situation where one rule specifies border:none, and
+    # another specifies borders via border-width, border-style, and border-
+    # color, but all the rules make it into the result.
+    for property in style
+      isImportant = style.getPropertyPriority(property)
 
-      properties[name] = value if (isImportant and important[name]) or not important[name]
-
-    for property, value of properties
-      results[property] = value if value
+      if not results[property]?
+        results[property] = style.getPropertyValue(property)
+      else if isImportant and not important[property]
+        results[property] = style.getPropertyValue(property)
+        important[property] = true
 
   results = _filterProperties(el, results, options.properties) if options.properties
   results = _replaceInherit(el, results) if options.replaceInherit

@@ -72,7 +72,7 @@
   };
 
   _inspect = function(el, options) {
-    var $el, cssText, important, isImportant, matchedRule, matchedRules, name, properties, property, results, sprop, value, _i, _j, _len, _len1, _ref;
+    var $el, important, isImportant, matchedRule, matchedRules, property, results, style, _i, _j, _len, _len1;
     if (options == null) {
       options = {};
     }
@@ -84,35 +84,19 @@
     $el = $(el);
     matchedRules = options["function"].call(window, $el[0], null);
     matchedRules = Array.prototype.slice.call(matchedRules);
-    matchedRules.push({
-      cssText: $el.attr('style') || ''
-    });
+    matchedRules.push($el[0]);
+    matchedRules.reverse();
     for (_i = 0, _len = matchedRules.length; _i < _len; _i++) {
       matchedRule = matchedRules[_i];
-      properties = {};
-      cssText = matchedRule.cssText;
-      if (cssText.indexOf('{') > -1) {
-        cssText = cssText.match(/{([^}]*)}/)[1];
-      }
-      _ref = cssText.split(';');
-      for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
-        property = _ref[_j];
-        sprop = property.split(':');
-        name = sprop[0].trim();
-        value = sprop.slice(1).join(':').trim();
-        isImportant = /\!\s*important/g.test(value);
-        if (isImportant) {
-          value = value.replace(/\!\s*important/g, '').trim();
-          important[name] = true;
-        }
-        if ((isImportant && important[name]) || !important[name]) {
-          properties[name] = value;
-        }
-      }
-      for (property in properties) {
-        value = properties[property];
-        if (value) {
-          results[property] = value;
+      style = matchedRule.style;
+      for (_j = 0, _len1 = style.length; _j < _len1; _j++) {
+        property = style[_j];
+        isImportant = style.getPropertyPriority(property);
+        if (!(results[property] != null)) {
+          results[property] = style.getPropertyValue(property);
+        } else if (isImportant && !important[property]) {
+          results[property] = style.getPropertyValue(property);
+          important[property] = true;
         }
       }
     }

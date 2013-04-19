@@ -30,11 +30,8 @@ describe 'cascadedStyle', ->
   it 'handles background position in style rule', ->
     # the browser is annoying in this case. it makes top right -> 100% 0%
     style = $('.has-multiple-style-rules').cascadedStyle()
-    expect(style['background-position']).toEqual('100% 0%')
-
-  it 'handles background position on style attribute', ->
-    style = $('.has-style-attribute').cascadedStyle()
-    expect(style['background-position']).toEqual('top center')
+    expect(style['background-position-x']).toEqual('100%')
+    expect(style['background-position-y']).toEqual('0%')
 
   describe 'handling inherits', ->
     it 'returns raw inherits', ->
@@ -71,10 +68,13 @@ describe 'cascadedStyle', ->
     it 'handles background position in style rule', ->
       # the browser is annoying in this case. it makes top right -> 100% 0%
       style = $('.has-multiple-style-rules').cascadedStyle()
-      expect(style['background-position']).toEqual('100% 0%')
+      expect(style['background-position-x']).toEqual('100%')
+      expect(style['background-position-y']).toEqual('0%')
 
-    it 'handles background position on style attribute', ->
-      style = $('.has-style-attribute').cascadedStyle()
-      expect(style['background-position']).toEqual('top center')
+    it 'border bug?', ->
+      style = $('.has-multiple-style-rules').css(border: 'none').cascadedStyle
+        polyfill:true
+        #properties: ['border-left-width', 'border-right-width', 'border-bottom-width', 'border-top-width']
+      console.log style
 
 
