@@ -72,7 +72,7 @@
   };
 
   _inspect = function(el, options) {
-    var $el, important, isImportant, matchedRule, matchedRules, property, results, style, _i, _j, _len, _len1;
+    var $el, important, isImportant, matchedRule, matchedRules, property, results, style, value, _i, _j, _len, _len1;
     if (options == null) {
       options = {};
     }
@@ -92,10 +92,11 @@
       for (_j = 0, _len1 = style.length; _j < _len1; _j++) {
         property = style[_j];
         isImportant = style.getPropertyPriority(property);
-        if (!(results[property] != null)) {
-          results[property] = style.getPropertyValue(property);
-        } else if (isImportant && !important[property]) {
-          results[property] = style.getPropertyValue(property);
+        value = style.getPropertyValue(property);
+        if (!(results[property] != null) && value && value !== 'initial') {
+          results[property] = value;
+        } else if (value && isImportant && !important[property]) {
+          results[property] = value;
           important[property] = true;
         }
       }

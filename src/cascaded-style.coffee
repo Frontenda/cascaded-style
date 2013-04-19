@@ -118,10 +118,11 @@ _inspect = (el, options={}) ->
     for property in style
       isImportant = style.getPropertyPriority(property)
 
-      if not results[property]?
-        results[property] = style.getPropertyValue(property)
-      else if isImportant and not important[property]
-        results[property] = style.getPropertyValue(property)
+      value = style.getPropertyValue(property)
+      if not results[property]? and value and value != 'initial'
+        results[property] = value
+      else if value and isImportant and not important[property]
+        results[property] = value
         important[property] = true
 
   results = _replaceInherit(el, results) if options.replaceInherit

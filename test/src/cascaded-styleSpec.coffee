@@ -33,6 +33,16 @@ describe 'cascadedStyle', ->
     expect(style['background-position-x']).toEqual('100%')
     expect(style['background-position-y']).toEqual('0%')
 
+  describe 'handling initial', ->
+    it 'will pick up proper border values', ->
+      style = $('.has-multiple-style-rules').cascadedStyle(polyfill: true)
+      expect(style['border-left-width']).toEqual('1px')
+      expect(style['border-left-style']).toEqual('dashed')
+
+    it 'will not store initial values', ->
+      style = $('.has-style-attribute').css(border: 'none').cascadedStyle()
+      expect(style['border-left-width']).toEqual(undefined)
+
   describe 'handling inherits', ->
     it 'returns raw inherits', ->
       style = $('.has-multiple-style-rules').cascadedStyle()
