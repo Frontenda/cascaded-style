@@ -136,7 +136,7 @@
     style = el.computedStyle();
     for (prop in css) {
       value = css[prop];
-      if ((value != null) && value.indexOf('inherit') === 0) {
+      if ((value != null) && (value.indexOf('inherit') === 0 || value.indexOf('initial') > -1)) {
         css[prop] = style[prop];
       }
     }

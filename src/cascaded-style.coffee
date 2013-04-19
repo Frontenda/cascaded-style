@@ -165,7 +165,7 @@ _replaceInherit = (el, css) ->
   style = el.computedStyle()
 
   for prop, value of css
-    css[prop] = style[prop] if value? and value.indexOf('inherit') == 0
+    css[prop] = style[prop] if value? and (value.indexOf('inherit') == 0 or value.indexOf('initial') > -1)
 
   css
 
