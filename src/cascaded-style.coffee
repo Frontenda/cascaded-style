@@ -21,7 +21,7 @@ $.fn.cascadedStyle = (options) ->
 # their coresponding CSS values.
 _inspectCSS = (el, options={}) ->
   func = window.getMatchedCSSRules
-  func = window.getMatchedCSSRulesPolyfill unless func and not options.polyfill
+  func = _getMatchedCSSRulesPolyfill unless func and not options.polyfill
   options.function = func
 
   _inspect(el, options)
@@ -33,7 +33,7 @@ _inspectCSS = (el, options={}) ->
 # Code from: https://gist.github.com/3033012 revision 732e1c
 #
 # Returns nothing.
-window.getMatchedCSSRulesPolyfill = (element) ->
+_getMatchedCSSRulesPolyfill = (element) ->
   return [] unless element
 
   result = []
