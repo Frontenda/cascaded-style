@@ -84,7 +84,13 @@ _sortBySpecificity = (rules, element) ->
     spec[rule.selectorText]
 
   cmp = (a, b) ->
-    return getSpec(a) - getSpec(b)
+    diff = getSpec(a) - getSpec(b)
+    diff = a.__pos - b.__pos unless diff
+    diff
+
+  # store position for stable sorting
+  for i in [0...rules.length]
+    rules[i].__pos = i
 
   rules.sort(cmp)
   rules
@@ -105,8 +111,7 @@ _inspect = (element, options={}) ->
   important = {}
   matchedRules = options.function.call(window, element, null)
   matchedRules = Array::slice.call(matchedRules) # convert into a real array
-
-  _sortBySpecificity(matchedRules, element)
+  matchedRules = _sortBySpecificity(matchedRules, element)
 
   # Append style from the element. End of the array -> most important.
   matchedRules.push(element)

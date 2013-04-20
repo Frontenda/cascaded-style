@@ -58,7 +58,7 @@
   };
 
   _sortBySpecificity = function(rules, element) {
-    var cmp, getSpec, spec,
+    var cmp, getSpec, i, spec, _i, _ref,
       _this = this;
     spec = {};
     getSpec = function(rule) {
@@ -70,8 +70,16 @@
       return spec[rule.selectorText];
     };
     cmp = function(a, b) {
-      return getSpec(a) - getSpec(b);
+      var diff;
+      diff = getSpec(a) - getSpec(b);
+      if (!diff) {
+        diff = a.__pos - b.__pos;
+      }
+      return diff;
     };
+    for (i = _i = 0, _ref = rules.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+      rules[i].__pos = i;
+    }
     rules.sort(cmp);
     return rules;
   };
@@ -91,7 +99,7 @@
     important = {};
     matchedRules = options["function"].call(window, element, null);
     matchedRules = Array.prototype.slice.call(matchedRules);
-    _sortBySpecificity(matchedRules, element);
+    matchedRules = _sortBySpecificity(matchedRules, element);
     matchedRules.push(element);
     matchedRules.reverse();
     for (_i = 0, _len = matchedRules.length; _i < _len; _i++) {

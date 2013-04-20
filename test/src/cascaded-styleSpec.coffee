@@ -72,6 +72,10 @@ describe 'cascadedStyle', ->
       expect(style['background-color']).toEqual('blue')
       expect(style['line-height']).toEqual('1.6')
 
+    it 'sorting of rules is stable', ->
+      style = $('.has-multiple-style-rules').cascadedStyle()
+      expect(style['border-bottom-style']).toEqual('dotted')
+
     it 'handles important rules', ->
       style = $('.has-multiple-style-rules').cascadedStyle(polyfill:true)
       expect(style['font-size']).toEqual('3em')

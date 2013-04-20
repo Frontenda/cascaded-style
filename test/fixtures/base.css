@@ -14,6 +14,9 @@
   border-bottom: 3px solid #555;
   border-right: 4px solid #666;
 }
+.has-multiple-style-rules{
+  border-bottom-style: dotted;
+}
 
 #test .has-style-attribute{
   background-color: black;
