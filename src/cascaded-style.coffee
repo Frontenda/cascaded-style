@@ -34,6 +34,8 @@ _inspectCSS = (el, options={}) ->
 #
 # Returns nothing.
 window.getMatchedCSSRulesPolyfill = (element) ->
+  return [] unless element
+
   result = []
   styleSheets = Array::slice.call(document.styleSheets)
 
@@ -65,19 +67,20 @@ window.getMatchedCSSRulesPolyfill = (element) ->
       catch e
         ;
 
-  _sortBySpecificity(result)
+  result
 
 # Private: Sort a list of css rules by their specificity. Most specific is
 # last.
 #
 # rules - a list of CssRules.
+# element - an HTMLElement not jquery obj
 #
 # Returns a sorted list of rules
-_sortBySpecificity = (rules) ->
+_sortBySpecificity = (rules, element) ->
   spec = {}
   getSpec = (rule) =>
     unless spec[rule.selectorText]?
-      spec[rule.selectorText] = $.specificity(rule.selectorText)
+      spec[rule.selectorText] = $.specificity(rule.selectorText, element: element)
     spec[rule.selectorText]
 
   cmp = (a, b) ->
@@ -94,17 +97,19 @@ _sortBySpecificity = (rules) ->
 #
 # Returns an object whose properties are CSS property names and values are
 # their corresponding CSS values.
-_inspect = (el, options={}) ->
+_inspect = (element, options={}) ->
   options.function = window.getMatchedCSSRules unless options.function
+  element = element[0] if element instanceof jQuery
 
   results = {}
   important = {}
-  $el = $(el)
-  matchedRules = options.function.call(window, $el[0], null)
+  matchedRules = options.function.call(window, element, null)
   matchedRules = Array::slice.call(matchedRules) # convert into a real array
 
+  _sortBySpecificity(matchedRules, element)
+
   # Append style from the element. End of the array -> most important.
-  matchedRules.push($el[0])
+  matchedRules.push(element)
   matchedRules.reverse()
 
   for matchedRule in matchedRules
@@ -125,8 +130,8 @@ _inspect = (el, options={}) ->
         results[property] = value
         important[property] = true
 
-  results = _replaceInherit(el, results) if options.replaceInherit
-  results = _filterProperties(el, results, options.properties) if options.properties
+  results = _replaceInherit(element, results) if options.replaceInherit
+  results = _filterProperties(element, results, options.properties) if options.properties
   results
 
 # Private: Returns a dict of css properties with only the properties
@@ -141,7 +146,7 @@ _inspect = (el, options={}) ->
 _filterProperties = (el, css, properties) ->
   return css unless properties and properties.length
 
-  style = el.computedStyle()
+  style = $(el).computedStyle()
 
   # Will try to composite the property from the atomic properties if possible.
   # Otherwise, just use computed style.
@@ -163,7 +168,7 @@ _filterProperties = (el, css, properties) ->
 #
 # Returns a dict of css
 _replaceInherit = (el, css) ->
-  style = el.computedStyle()
+  style = $(el).computedStyle()
 
   for prop, value of css
     css[prop] = style[prop] if value? and (value.indexOf('inherit') == 0 or value.indexOf('initial') > -1)

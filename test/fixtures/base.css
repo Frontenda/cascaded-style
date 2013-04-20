@@ -1,4 +1,8 @@
-
+#test .has-multiple-style-rules{
+  background-color: blue;
+  line-height: 1.6;
+  font-size: 1em;
+}
 .has-multiple-style-rules{
   background-color: white;
   background-position: right top;
@@ -9,11 +13,6 @@
   border-top: 2px solid #444;
   border-bottom: 3px solid #555;
   border-right: 4px solid #666;
-}
-#test .has-multiple-style-rules{
-  background-color: blue;
-  line-height: 1.6;
-  font-size: 1em;
 }
 
 #test .has-style-attribute{

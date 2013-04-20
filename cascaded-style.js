@@ -21,6 +21,9 @@
 
   window.getMatchedCSSRulesPolyfill = function(element) {
     var fn, result, rule, sheet, sheetMedia, styleSheets, _i, _len, _ref;
+    if (!element) {
+      return [];
+    }
     result = [];
     styleSheets = Array.prototype.slice.call(document.styleSheets);
     while (sheet = styleSheets.shift()) {
@@ -51,16 +54,18 @@
         }
       }
     }
-    return _sortBySpecificity(result);
+    return result;
   };
 
-  _sortBySpecificity = function(rules) {
+  _sortBySpecificity = function(rules, element) {
     var cmp, getSpec, spec,
       _this = this;
     spec = {};
     getSpec = function(rule) {
       if (spec[rule.selectorText] == null) {
-        spec[rule.selectorText] = $.specificity(rule.selectorText);
+        spec[rule.selectorText] = $.specificity(rule.selectorText, {
+          element: element
+        });
       }
       return spec[rule.selectorText];
     };
@@ -71,20 +76,23 @@
     return rules;
   };
 
-  _inspect = function(el, options) {
-    var $el, important, isImportant, matchedRule, matchedRules, property, results, style, value, _i, _j, _len, _len1;
+  _inspect = function(element, options) {
+    var important, isImportant, matchedRule, matchedRules, property, results, style, value, _i, _j, _len, _len1;
     if (options == null) {
       options = {};
     }
     if (!options["function"]) {
       options["function"] = window.getMatchedCSSRules;
     }
+    if (element instanceof jQuery) {
+      element = element[0];
+    }
     results = {};
     important = {};
-    $el = $(el);
-    matchedRules = options["function"].call(window, $el[0], null);
+    matchedRules = options["function"].call(window, element, null);
     matchedRules = Array.prototype.slice.call(matchedRules);
-    matchedRules.push($el[0]);
+    _sortBySpecificity(matchedRules, element);
+    matchedRules.push(element);
     matchedRules.reverse();
     for (_i = 0, _len = matchedRules.length; _i < _len; _i++) {
       matchedRule = matchedRules[_i];
@@ -102,10 +110,10 @@
       }
     }
     if (options.replaceInherit) {
-      results = _replaceInherit(el, results);
+      results = _replaceInherit(element, results);
     }
     if (options.properties) {
-      results = _filterProperties(el, results, options.properties);
+      results = _filterProperties(element, results, options.properties);
     }
     return results;
   };
@@ -115,7 +123,7 @@
     if (!(properties && properties.length)) {
       return css;
     }
-    style = el.computedStyle();
+    style = $(el).computedStyle();
     computeStyle = function(property) {
       var value;
       value = _compositeProperty(property, css);
@@ -134,7 +142,7 @@
 
   _replaceInherit = function(el, css) {
     var prop, style, value;
-    style = el.computedStyle();
+    style = $(el).computedStyle();
     for (prop in css) {
       value = css[prop];
       if ((value != null) && (value.indexOf('inherit') === 0 || value.indexOf('initial') > -1)) {
