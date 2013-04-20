@@ -10,6 +10,7 @@
 #                default: null
 #   replaceInherit - bool; will replace css values 'inherit' with their computed counterpart
 #                    default: false
+#   window - the window you want to grab style rules from. Will use this window unless specified.
 $.fn.cascadedStyle = (options) ->
   _inspectCSS($(this), options)
 
@@ -20,11 +21,14 @@ $.fn.cascadedStyle = (options) ->
 # Returns an object whose properties are CSS property names and values are
 # their coresponding CSS values.
 _inspectCSS = (el, options={}) ->
-  func = window.getMatchedCSSRules
+  func = _getWindow(options).getMatchedCSSRules
   func = _getMatchedCSSRulesPolyfill unless func and not options.polyfill
   options.function = func
 
   _inspect(el, options)
+
+_getWindow = (options={}) ->
+  options.window or window
 
 # Private: Polyfill for getMatchedCSSRules. Also useful for when some of the
 # stylesheets are crossdomain. In the case of crossdomain stylesheets, the
@@ -37,14 +41,14 @@ _getMatchedCSSRulesPolyfill = (element) ->
   return [] unless element
 
   result = []
-  styleSheets = Array::slice.call(document.styleSheets)
+  styleSheets = Array::slice.call(this.document.styleSheets)
 
   while sheet = styleSheets.shift()
     sheetMedia = sheet.media.mediaText
     continue if sheet.disabled or not sheet.cssRules
 
     # most browsers have window.matchMedia, but some (jasmine headless webkit) dont
-    continue if sheetMedia.length and (not window.matchMedia or not window.matchMedia(sheetMedia).matches)
+    continue if sheetMedia.length and (not this.matchMedia or not this.matchMedia(sheetMedia).matches)
 
     for rule in sheet.cssRules
       if rule.stylesheet
@@ -104,12 +108,13 @@ _sortBySpecificity = (rules, element) ->
 # Returns an object whose properties are CSS property names and values are
 # their corresponding CSS values.
 _inspect = (element, options={}) ->
-  options.function = window.getMatchedCSSRules unless options.function
+  win = _getWindow(options)
+  options.function = win.getMatchedCSSRules unless options.function
   element = element[0] if element instanceof jQuery
 
   results = {}
   important = {}
-  matchedRules = options.function.call(window, element, null)
+  matchedRules = options.function.call(win, element, null)
   matchedRules = Array::slice.call(matchedRules) # convert into a real array
   matchedRules = _sortBySpecificity(matchedRules, element)
 
