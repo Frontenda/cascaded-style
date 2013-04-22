@@ -35,6 +35,11 @@
     styleSheets = Array.prototype.slice.call(this.document.styleSheets);
     while (sheet = styleSheets.shift()) {
       sheetMedia = sheet.media.mediaText;
+      try {
+        sheet.cssRules;
+      } catch (e) {
+        continue;
+      }
       if (sheet.disabled || !sheet.cssRules) {
         continue;
       }

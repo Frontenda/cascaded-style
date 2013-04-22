@@ -45,6 +45,13 @@ _getMatchedCSSRulesPolyfill = (element) ->
 
   while sheet = styleSheets.shift()
     sheetMedia = sheet.media.mediaText
+
+    try
+      sheet.cssRules
+    catch e
+      # Fail on this sheet. Likely a security error from a cross domain sheet.
+      continue
+
     continue if sheet.disabled or not sheet.cssRules
 
     # most browsers have window.matchMedia, but some (jasmine headless webkit) dont
