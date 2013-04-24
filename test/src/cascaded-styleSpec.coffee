@@ -43,6 +43,23 @@ describe 'cascadedStyle', ->
       style = $('.has-style-attribute').css(border: 'none').cascadedStyle()
       expect(style['border-left-width']).toEqual(undefined)
 
+  describe 'handling background and background images', ->
+    it 'will return the background-image', ->
+      style = $('.has-background-image').cascadedStyle
+        polyfill: true
+        properties: ['background', 'background-image', 'background-color']
+      expect(style['background-color']).toEqual('rgb(15, 15, 15)')
+      expect(style['background-image']).toContain('gradient(')
+
+    it 'will return the background-image', ->
+      style = $('.has-background-image').css(background:'#fff').cascadedStyle
+        polyfill: true
+        properties: ['background', 'background-image', 'background-color']
+      expect(style['background']).toContain('rgb(255, 255, 255)')
+      expect(style['background']).not.toContain('gradient')
+      expect(style['background-color']).toEqual('rgb(255, 255, 255)')
+      expect(style['background-image']).toEqual('none')
+
   describe 'handling inherits', ->
     it 'returns raw inherits', ->
       style = $('.has-multiple-style-rules').cascadedStyle()
