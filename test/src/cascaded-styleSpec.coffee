@@ -41,7 +41,7 @@ describe 'cascadedStyle', ->
 
     it 'will not store initial values', ->
       style = $('.has-style-attribute').css(border: 'none').cascadedStyle()
-      expect(style['border-left-width']).toEqual(undefined)
+      expect(style['border-left-width']).toEqual('0px')
 
   describe 'handling background and background images', ->
     it 'will return the background-image', ->

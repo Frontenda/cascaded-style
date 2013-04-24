@@ -141,13 +141,14 @@ _inspect = (element, options={}) ->
       isImportant = style.getPropertyPriority(property)
 
       value = style.getPropertyValue(property)
-      if not results[property]? and value and value != 'initial'
+      if not results[property]? and value
         results[property] = value
       else if value and isImportant and not important[property]
         results[property] = value
         important[property] = true
 
-  results = _replaceInherit(element, results) if options.replaceInherit
+  results = _replaceWithComputed(element, results, 'initial')
+  results = _replaceWithComputed(element, results, 'inherit') if options.replaceInherit
   results = _filterProperties(element, results, options.properties) if options.properties
   results
 
@@ -184,11 +185,11 @@ _filterProperties = (el, css, properties) ->
 # css - the css dict with all cascaded styles
 #
 # Returns a dict of css
-_replaceInherit = (el, css) ->
+_replaceWithComputed = (el, css, valueToReplace) ->
   style = $(el).computedStyle()
 
   for prop, value of css
-    css[prop] = style[prop] if value? and (value.indexOf('inherit') == 0 or value.indexOf('initial') > -1)
+    css[prop] = style[prop] if value? and (value.indexOf(valueToReplace) == 0)
 
   css
 
