@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "main": ["./cascaded-style.js"],
   "dependencies": {
-    "specificity": "easelinc/specificity",
+    "specificity": "easelinc/specificity#~0",
     "computed-style": "jamierumbelow/jquery.computed-style"
   },
   "ignore": [
