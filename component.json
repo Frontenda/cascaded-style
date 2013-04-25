@@ -1,6 +1,6 @@
 {
   "name": "cascaded-style",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": ["./cascaded-style.js"],
   "dependencies": {
     "specificity": "easelinc/specificity",
