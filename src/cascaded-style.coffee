@@ -130,6 +130,8 @@ _inspect = (element, options={}) ->
   matchedRules.reverse()
 
   for matchedRule in matchedRules
+    continue unless matchedRule and matchedRule.style
+
     style = matchedRule.style
 
     # Will get all the atomic properties (i.e. background-position-x, not

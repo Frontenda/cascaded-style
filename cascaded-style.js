@@ -123,6 +123,9 @@
     matchedRules.reverse();
     for (_i = 0, _len = matchedRules.length; _i < _len; _i++) {
       matchedRule = matchedRules[_i];
+      if (!(matchedRule && matchedRule.style)) {
+        continue;
+      }
       style = matchedRule.style;
       for (_j = 0, _len1 = style.length; _j < _len1; _j++) {
         property = style[_j];
