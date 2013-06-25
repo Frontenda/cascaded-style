@@ -172,7 +172,7 @@ _filterProperties = (el, css, properties) ->
   # Otherwise, just use computed style.
   computeStyle = (property) ->
     value = _compositeProperty(property, css)
-    value = style[property] unless value?
+    value = _getComputedFromStyle(style, property) unless value?
     value
 
   results = {}
@@ -191,9 +191,12 @@ _replaceWithComputed = (el, css, valueToReplace) ->
   style = $(el).computedStyle()
 
   for prop, value of css
-    css[prop] = style[prop] if value? and (value.indexOf(valueToReplace) == 0)
+    css[prop] = _getComputedFromStyle(style, prop) if value? and (value.indexOf(valueToReplace) == 0)
 
   css
+
+_getComputedFromStyle = (style, property) ->
+  if style.getPropertyValue then style.getPropertyValue(property) else style[property]
 
 # Private: compose a value for property based on the atomic css properties
 # passed in.
@@ -211,6 +214,29 @@ COMPOSITES =
   'background-position': (css) ->
     if css['background-position-x'] and css['background-position-y']
       return "#{css['background-position-x']} #{css['background-position-y']}"
+    null
+
+  # firefox uses border-left-width-value as an atomic value. Ugh. Top and
+  # bottom are like webkit.
+  'border-left-width': (css) ->
+    return css['border-left-width-value'] if css['border-left-width-value']
+    null
+  'border-left-color': (css) ->
+    return css['border-left-color-value'] if css['border-left-color-value']
+    null
+  'border-left-style': (css) ->
+    return css['border-left-style-value'] if css['border-left-style-value']
+    null
+
+  # firefox uses border-right-width-value as an atomic value. Ugh.
+  'border-right-width': (css) ->
+    return css['border-right-width-value'] if css['border-right-width-value']
+    null
+  'border-right-color': (css) ->
+    return css['border-right-color-value'] if css['border-right-color-value']
+    null
+  'border-right-style': (css) ->
+    return css['border-right-style-value'] if css['border-right-style-value']
     null
 
 
