@@ -9,29 +9,35 @@ describe 'cascadedStyle', ->
     # elements. Not ideal.
     waits 0
 
-  xit 'exists', ->
+  it 'exists', ->
     expect($('#test')).toExist()
     expect($('#test').cascadedStyle).toBeDefined()
 
-  xit 'handles multiple style rules', ->
+  it 'handles multiple style rules', ->
     style = $('.has-multiple-style-rules').cascadedStyle()
     expect(style['background-color']).toEqual('blue')
     expect(style['line-height']).toEqual('1.6')
 
-  xit 'handles important rules', ->
+  it 'handles important rules', ->
     style = $('.has-multiple-style-rules').cascadedStyle()
     console.log style
     expect(style['font-size']).toEqual('3em')
 
-  xit 'handles style attributes', ->
+  it 'handles style attributes', ->
     style = $('.has-style-attribute').cascadedStyle()
     expect(style['background-color']).toEqual('green')
 
-  xit 'handles background position in style rule', ->
-    # the browser is annoying in this case. it makes top right -> 100% 0%
-    style = $('.has-multiple-style-rules').cascadedStyle()
-    expect(style['background-position-x']).toEqual('100%')
-    expect(style['background-position-y']).toEqual('0%')
+  it 'handles background position in style rule', ->
+    # webkit is annoying in this case. it makes top right -> 100% 0%
+    style = $('.has-multiple-style-rules').cascadedStyle
+      properties: ['background-position-x', 'background-position-y', 'background-position']
+
+    # Man this is not good.
+    if style['background-position-x'] # webkit
+      expect(style['background-position-x']).toEqual('100%')
+      expect(style['background-position-y']).toEqual('0%')
+    else # firefox
+      expect(style['background-position']).toEqual('right top')
 
   describe 'handling initial', ->
     it 'will pick up proper border values', ->
@@ -117,6 +123,7 @@ describe 'cascadedStyle', ->
     it 'handles background position in style rule', ->
       # webkit is annoying in this case. it makes top right -> 100% 0%
       style = $('.has-multiple-style-rules').cascadedStyle
+        polyfill:true
         properties: ['background-position-x', 'background-position-y', 'background-position']
 
       # Man this is not good.
