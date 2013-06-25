@@ -69,28 +69,32 @@ describe 'cascadedStyle', ->
       expect(style['background-color']).toEqual('rgb(255, 255, 255)')
       expect(style['background-image']).toEqual('none')
 
-  xdescribe 'handling inherits', ->
+  describe 'handling inherits', ->
     it 'returns raw inherits', ->
       style = $('.has-multiple-style-rules').cascadedStyle()
       expect(style['font-family']).toEqual('inherit')
 
     it 'replaces inherits with computed style', ->
       style = $('.has-multiple-style-rules').cascadedStyle(replaceInherit: true)
-      expect(style['font-family']).toEqual('Times')
 
-  xdescribe 'passing a list of properties to pull', ->
+      # Times in webkit, serif in firefox
+      expect(style['font-family']).toMatch(/Times|serif/g)
+
+  describe 'passing a list of properties to pull', ->
     it 'only returns props passed in', ->
       style = $('.has-multiple-style-rules').cascadedStyle(properties: ['line-height'])
       expect(style).toEqual('line-height': '1.6')
 
     it 'fills in non-cascaded styles with computed styles', ->
       style = $('.has-style-attribute').cascadedStyle(properties: ['line-height'])
-      expect(style).toEqual('line-height': 'normal')
+      # normal in webkit, 19.2 in firefox
+      expect(style['line-height']).toMatch(/normal|19.2px/)
 
     describe 'dealing with composite properties', ->
       it 'composites background-position', ->
         style = $('.has-multiple-style-rules').cascadedStyle(properties: ['background-position'])
-        expect(style).toEqual('background-position': '100% 0%')
+        # 100% 0% in webkit, right top in firefox
+        expect(style['background-position']).toMatch(/100% 0%|right top/)
 
   xdescribe 'using polyfill', ->
     it 'handles multiple style rules', ->

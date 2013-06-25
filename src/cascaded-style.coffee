@@ -172,8 +172,7 @@ _filterProperties = (el, css, properties) ->
   # Otherwise, just use computed style.
   computeStyle = (property) ->
     value = _compositeProperty(property, css)
-    #value = style[property] unless value?
-    value = (if style.getPropertyValue then style.getPropertyValue(property) else style[property]) unless value?
+    value = _getComputedFromStyle(style, property) unless value?
     value
 
   results = {}
@@ -192,9 +191,12 @@ _replaceWithComputed = (el, css, valueToReplace) ->
   style = $(el).computedStyle()
 
   for prop, value of css
-    css[prop] = style[prop] if value? and (value.indexOf(valueToReplace) == 0)
+    css[prop] = _getComputedFromStyle(style, prop) if value? and (value.indexOf(valueToReplace) == 0)
 
   css
+
+_getComputedFromStyle = (style, property) ->
+  if style.getPropertyValue then style.getPropertyValue(property) else style[property]
 
 # Private: compose a value for property based on the atomic css properties
 # passed in.
