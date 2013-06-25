@@ -96,7 +96,7 @@ describe 'cascadedStyle', ->
         # 100% 0% in webkit, right top in firefox
         expect(style['background-position']).toMatch(/100% 0%|right top/)
 
-  xdescribe 'using polyfill', ->
+  describe 'using polyfill', ->
     it 'handles multiple style rules', ->
       style = $('.has-multiple-style-rules').cascadedStyle(polyfill:true)
       expect(style['background-color']).toEqual('blue')
@@ -115,10 +115,16 @@ describe 'cascadedStyle', ->
       expect(style['background-color']).toEqual('green')
 
     it 'handles background position in style rule', ->
-      # the browser is annoying in this case. it makes top right -> 100% 0%
-      style = $('.has-multiple-style-rules').cascadedStyle()
-      expect(style['background-position-x']).toEqual('100%')
-      expect(style['background-position-y']).toEqual('0%')
+      # webkit is annoying in this case. it makes top right -> 100% 0%
+      style = $('.has-multiple-style-rules').cascadedStyle
+        properties: ['background-position-x', 'background-position-y', 'background-position']
+
+      # Man this is not good.
+      if style['background-position-x'] # webkit
+        expect(style['background-position-x']).toEqual('100%')
+        expect(style['background-position-y']).toEqual('0%')
+      else # firefox
+        expect(style['background-position']).toEqual('right top')
 
     it 'border bug?', ->
       style = $('.has-multiple-style-rules').css(border: 'none').cascadedStyle
