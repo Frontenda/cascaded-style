@@ -161,7 +161,7 @@
 
       value = _compositeProperty(property, css);
       if (value == null) {
-        value = style[property];
+        value = (style.getPropertyValue ? style.getPropertyValue(property) : style[property]);
       }
       return value;
     };
@@ -197,6 +197,42 @@
     'background-position': function(css) {
       if (css['background-position-x'] && css['background-position-y']) {
         return "" + css['background-position-x'] + " " + css['background-position-y'];
+      }
+      return null;
+    },
+    'border-left-width': function(css) {
+      if (css['border-left-width-value']) {
+        return css['border-left-width-value'];
+      }
+      return null;
+    },
+    'border-left-color': function(css) {
+      if (css['border-left-color-value']) {
+        return css['border-left-color-value'];
+      }
+      return null;
+    },
+    'border-left-style': function(css) {
+      if (css['border-left-style-value']) {
+        return css['border-left-style-value'];
+      }
+      return null;
+    },
+    'border-right-width': function(css) {
+      if (css['border-right-width-value']) {
+        return css['border-right-width-value'];
+      }
+      return null;
+    },
+    'border-right-color': function(css) {
+      if (css['border-right-color-value']) {
+        return css['border-right-color-value'];
+      }
+      return null;
+    },
+    'border-right-style': function(css) {
+      if (css['border-right-style-value']) {
+        return css['border-right-style-value'];
       }
       return null;
     }
