@@ -75,6 +75,15 @@ describe 'cascadedStyle', ->
       expect(style['background-color']).toEqual('rgb(255, 255, 255)')
       expect(style['background-image']).toEqual('none')
 
+  describe 'handling box-shadows', ->
+    it 'will return the box-shadows', ->
+      style = $('.has-box-shadows').cascadedStyle
+        polyfill: true
+        properties: ['box-shadow']
+
+      expect(style['box-shadow']).toContain('0px 0px 10px 0px')
+      expect(style['box-shadow']).toContain('rgba(255, 25, 25, 0.2)')
+
   describe 'handling inherits', ->
     it 'returns raw inherits', ->
       style = $('.has-multiple-style-rules').cascadedStyle()
