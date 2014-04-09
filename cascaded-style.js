@@ -112,7 +112,7 @@
     }
     results = {};
     important = {};
-    matchedRules = options["function"].call(win, element, null);
+    matchedRules = options["function"].call(win, element, null) || [];
     matchedRules = Array.prototype.slice.call(matchedRules);
     matchedRules = _sortBySpecificity(matchedRules, element);
     matchedRules.push(element);

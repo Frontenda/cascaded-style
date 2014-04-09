@@ -122,7 +122,7 @@ _inspect = (element, options={}) ->
 
   results = {}
   important = {}
-  matchedRules = options.function.call(win, element, null)
+  matchedRules = options.function.call(win, element, null) or []
   matchedRules = Array::slice.call(matchedRules) # convert into a real array
   matchedRules = _sortBySpecificity(matchedRules, element)
 

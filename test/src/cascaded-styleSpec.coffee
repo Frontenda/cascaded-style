@@ -84,6 +84,9 @@ describe 'cascadedStyle', ->
       style = $('.has-line-height').cascadedStyle()
       expect(style['line-height']).toEqual('1.6')
 
+      style = $('.has-line-height span').cascadedStyle(properties: ['line-height'])
+      expect(style['line-height']).toContain('25')
+
     it 'replaces inherits with computed style', ->
       style = $('.has-multiple-style-rules').cascadedStyle(replaceInherit: true)
       expect(style['font-family']).toMatch(/Times|serif/g) # Times in webkit, serif in firefox
@@ -91,6 +94,9 @@ describe 'cascadedStyle', ->
     it 'returns raw inherits for nested items with replaceInherit', ->
       style = $('.has-line-height').cascadedStyle(replaceInherit: true)
       expect(style['line-height']).toEqual('1.6')
+
+      style = $('.has-line-height span').cascadedStyle(replaceInherit: true, properties: ['line-height'])
+      expect(style['line-height']).toContain('25')
 
   describe 'passing a list of properties to pull', ->
     it 'only returns props passed in', ->
