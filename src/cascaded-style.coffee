@@ -44,9 +44,10 @@ _getMatchedCSSRulesPolyfill = (element) ->
   styleSheets = Array::slice.call(this.document.styleSheets)
 
   while sheet = styleSheets.shift()
-    sheetMedia = sheet.media.mediaText
 
     try
+      # Firefox can die when accessing mediaText
+      sheetMedia = sheet.media.mediaText
       sheet.cssRules
     catch e
       # Fail on this sheet. Likely a security error from a cross domain sheet.
@@ -238,5 +239,3 @@ COMPOSITES =
   'border-right-style': (css) ->
     return css['border-right-style-value'] if css['border-right-style-value']
     null
-
-
