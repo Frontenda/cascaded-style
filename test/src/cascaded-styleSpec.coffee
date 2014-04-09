@@ -80,11 +80,17 @@ describe 'cascadedStyle', ->
       style = $('.has-multiple-style-rules').cascadedStyle()
       expect(style['font-family']).toEqual('inherit')
 
+    it 'returns raw inherits for nested items', ->
+      style = $('.has-line-height').cascadedStyle()
+      expect(style['line-height']).toEqual('1.6')
+
     it 'replaces inherits with computed style', ->
       style = $('.has-multiple-style-rules').cascadedStyle(replaceInherit: true)
+      expect(style['font-family']).toMatch(/Times|serif/g) # Times in webkit, serif in firefox
 
-      # Times in webkit, serif in firefox
-      expect(style['font-family']).toMatch(/Times|serif/g)
+    it 'returns raw inherits for nested items with replaceInherit', ->
+      style = $('.has-line-height').cascadedStyle(replaceInherit: true)
+      expect(style['line-height']).toEqual('1.6')
 
   describe 'passing a list of properties to pull', ->
     it 'only returns props passed in', ->
@@ -138,5 +144,3 @@ describe 'cascadedStyle', ->
         polyfill:true
         #properties: ['border-left-width', 'border-right-width', 'border-bottom-width', 'border-top-width']
       console.log style
-
-
