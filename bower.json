@@ -1,7 +1,9 @@
 {
   "name": "cascaded-style",
-  "version": "0.0.4",
-  "main": ["./cascaded-style.js"],
+  "version": "0.0.5",
+  "main": [
+    "./cascaded-style.js"
+  ],
   "dependencies": {
     "specificity": "easelinc/specificity#~0",
     "computed-style": "jamierumbelow/jquery.computed-style"
